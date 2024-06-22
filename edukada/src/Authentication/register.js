@@ -130,7 +130,6 @@ const notifyerroremailmatch = () => toast.error('Make sure that the Email is Cor
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        marginLeft: "120px",
       }}
     >
       <div style={{ textAlign: "center", marginRight: "50px" }}>

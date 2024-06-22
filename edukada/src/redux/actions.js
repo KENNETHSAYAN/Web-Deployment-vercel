@@ -1,16 +1,9 @@
 // actions.js
+export const submitAnswer = (answer) => ({
+  type: 'SUBMIT_ANSWER',
+  payload: answer,
+});
 
-export const addTask = (newTask) => {
-    return {
-      type: 'ADD_TASK',
-      payload: newTask,
-    };
-  };
-  
-
-// // actions.js
-// export const addTask = (task) => ({
-//     type: 'ADD_TASK',
-//     payload: task
-//   });
-  
+export const resetQuiz = () => ({
+  type: 'RESET_QUIZ',
+});

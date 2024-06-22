@@ -11,14 +11,15 @@ import ScienceScreen from './Content/ScienceSCreen';
 import HistoryScreen from './Content/HistoryScreen';
 import EnglishScreen from './Content/EnglishScreen';
 import ExploreQuiz from './Content/ExploreQuiz';
-
+import LandingPage from './Landingpage';
+import ViewTable from './Content/Viewtable';
 
 export default function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route index element={<Login />} />
+          <Route index element={<LandingPage />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
           <Route path="/Reset" element={<Resetpassword />} />
@@ -30,11 +31,7 @@ export default function App() {
           <Route path="/history" element={<HistoryScreen />} /> 
           <Route path="/english" element={<EnglishScreen />} /> 
           <Route path="/quiz" element={<ExploreQuiz />} /> 
-
-
-
-
-
+          <Route path="/view-tables" element={<ViewTable />} /> 
 
         </Routes>
       </BrowserRouter>

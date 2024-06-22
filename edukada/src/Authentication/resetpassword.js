@@ -32,7 +32,7 @@ export default function Resetpassword() {
   };
 
   return (
-    <div className='container' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', marginLeft:'100px' }}>
+    <div className='container' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <div style={{ textAlign: 'center', marginRight: '50px' }}>
         <img src='/assets/logo.png' style={{ width: '300px', height: '300px' }} />
         <p style={{ color: 'black', fontSize: '30px', fontWeight: 'bold', marginTop: '20px' }}>Edukada</p>

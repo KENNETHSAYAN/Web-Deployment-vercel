@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux'; // Importing useSelector from react-redux
+import { useSelector, useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -7,34 +7,24 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button'; // Import Button from MUI
-import { Link, useNavigate } from 'react-router-dom'; // Import Link from react-router-dom
+import Button from '@mui/material/Button'; 
+import { Link, useNavigate } from 'react-router-dom'; 
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonIcon from '@mui/icons-material/Person';
 import Avatar from '@mui/material/Avatar';
-import { FaCirclePlus } from "react-icons/fa6";
-import { MdExplore } from 'react-icons/md'; // Import Explore icon from 'react-icons/md'
-import Cookies from 'js-cookie'; // For secure token storage
+import { MdExplore } from 'react-icons/md'; 
+import Cookies from 'js-cookie'; 
 import http from '../axios';
-
 
 export default function Profile() {
   const navigate = useNavigate();
   const tokens = Cookies.get('auth_token');
   const [data, setData] = useState(null);
-  // const [tasks, setTasks] = useState({done: false});
-  const [tasks, setTasks] = useState([]);
-  const task = useSelector(state => state.tasks); // Accessing tasks from Redux store
-
-  const handleTaskDoneToggle = (index) => {
-    const updatedTasks = [...tasks];
-    if (updatedTasks[index]) {
-      updatedTasks[index].done = !updatedTasks[index].done;
-      setTasks(updatedTasks);
-    } else {
-      console.error(`Task at index ${index} is undefined.`);
-    }
-  };
+  
+  const questions = useSelector(state => state.questions);
+  const userAnswers = useSelector(state => state.userAnswers);
+  
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!tokens) {
@@ -49,11 +39,24 @@ export default function Profile() {
         console.log(error)
       )
     }
-  }, [tokens, navigate]);
+    
+    const savedAnswers = localStorage.getItem('userAnswers');
+    if (savedAnswers) {
+      dispatch({ type: 'SET_ANSWERS', payload: JSON.parse(savedAnswers) });
+    }
+  }, [tokens, navigate, dispatch]);
+
+  useEffect(() => {
+    localStorage.setItem('userAnswers', JSON.stringify(userAnswers));
+  }, [userAnswers]);
 
   const handleLogout = () => {
     Cookies.remove('auth_token');
     navigate('/');
+  }
+
+  const handleTableButtonClick = () => {
+    navigate('/view-tables'); // Navigate to ViewTables.js
   }
 
   return (
@@ -72,7 +75,6 @@ export default function Profile() {
             variant="permanent"
             anchor="center"
           >
-            {/* Sidebar Content */}
             <List>
               <ListItem>
                 <ListItemText
@@ -84,7 +86,6 @@ export default function Profile() {
                 />
               </ListItem>
 
-              {/* Dashboard Link */}
               <ListItem component={Link} to="/Course">
                 <ListItemIcon>
                   <DashboardIcon />
@@ -92,7 +93,6 @@ export default function Profile() {
                 <ListItemText primary="Dashboard" />
               </ListItem>
 
-              {/* Explore Quiz Icon */}
               <ListItem sx={{ mt: 'auto' }} component={Link} to="/quiz">
                 <ListItemIcon>
                   <MdExplore />
@@ -101,13 +101,19 @@ export default function Profile() {
               </ListItem>
             </List>
             
-              {/* Profile Link */}
               <ListItem component={Link} to="/Profile">
                 <ListItemIcon>
                   <PersonIcon />
                 </ListItemIcon>
                 <ListItemText primary="Profile" />
               </ListItem>
+            <Button
+              onClick={handleTableButtonClick}
+              variant="contained"
+              sx={{ marginTop: '650px' }}
+            >
+              View Table
+            </Button>
           </Drawer>
 
           {/* Dashboard Content */}
@@ -151,6 +157,21 @@ export default function Profile() {
                 }}
               />
             </Box>
+            
+            {/* Quiz Content */}
+            <Box sx={{ width: '100%', marginTop: '20px' }}>
+              <Typography variant="h6">Quiz Progress</Typography>
+              <ul style={{ listStyleType: 'none', padding: 0 }}>
+                {userAnswers.map((answer, index) => (
+                  <li key={index} style={{ marginBottom: '20px', color: answer.correct ? 'green' : 'red' }}>
+                    <Typography variant="body1">{index + 1}. {questions[index].question} - {answer.correct ? 'Correct' : 'Incorrect'}</Typography>
+                  </li>
+                ))}
+              </ul>
+              <Typography variant="body1">Score: {userAnswers.filter(answer => answer.correct).length} / {questions.length}</Typography>
+            </Box>
+
+
           </Box>
         </Box>
       ) : (

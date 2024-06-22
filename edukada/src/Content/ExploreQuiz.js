@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom'; // Import Link for navigation
+import { submitAnswer } from '../redux/actions';
+
 
 const ExploreQuiz = () => {
   const quizData = [
@@ -52,7 +55,7 @@ const ExploreQuiz = () => {
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
-  const [results, setResults] = useState([]); // Store results of each question
+  const dispatch = useDispatch();
 
   const handleNextQuestion = () => {
     if (count + 1 >= quizData.length) {
@@ -73,7 +76,7 @@ const ExploreQuiz = () => {
       const currentQuestion = quizData[count];
       const correct = option === currentQuestion.answer;
       setIsCorrect(correct);
-      setResults([...results, { question: currentQuestion.question, correct }]);
+      dispatch(submitAnswer({ question: currentQuestion.question, correct }));
       if (correct) {
         setScore(score + 1);
       }
@@ -105,13 +108,7 @@ const ExploreQuiz = () => {
           <div>
             <p>Congratulations! You have completed the quiz.</p>
             <p>Your Score: {score} / {quizData.length}</p>
-            <ul style={{ listStyleType: 'none', padding: 0 }}>
-              {results.map((result, index) => (
-                <li key={index} style={{ marginBottom: '20px', color: result.correct ? 'green' : 'red' }}>
-                  {index + 1}. {result.question} - {result.correct ? 'Correct' : 'Incorrect'}
-                </li>
-              ))}
-            </ul>
+            {/* Removed the results display from here */}
           </div>
         ) : (
           <ul style={{ listStyleType: 'none', padding: 0 }}>
@@ -134,7 +131,7 @@ const ExploreQuiz = () => {
           </ul>
         )}
         {!quizCompleted && <button onClick={handleNextQuestion} disabled={!answered}>Next</button>}
-        {quizCompleted && <Link to="/profile">Go back to the Dashboard</Link>} {/* View Profile button */}
+        {quizCompleted && <Link to="/profile">Go back to the Dashboard</Link>}
       </div>
     </div>
   );
